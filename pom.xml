@@ -181,12 +181,6 @@
             <artifactId>braintree-java</artifactId>
             <version>${paypal.version}</version>
         </dependency>
-        <!--yml-->
-        <dependency>
-            <groupId>org.jyaml</groupId>
-            <artifactId>jyaml</artifactId>
-        </dependency>
-
         <!--other-->
         <dependency>
             <groupId>org.projectlombok</groupId>

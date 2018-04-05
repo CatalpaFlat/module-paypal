@@ -2,9 +2,9 @@ package com.github.catalpaflat.paypal.support;
 
 import com.braintreegateway.BraintreeGateway;
 import com.github.catalpaflat.paypal.constant.PayPalConstant;
-import com.github.catalpaflat.paypal.properties.PayPalProperties;
+import com.github.catalpaflat.paypal.exception.PayPalException;
 import com.github.catalpaflat.paypal.model.to.PayPalTO;
-import com.sun.javafx.tools.packager.PackagerException;
+import com.github.catalpaflat.paypal.properties.PayPalProperties;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -16,26 +16,26 @@ abstract class AbstractPayPalSupport {
     private String productAccessToken;
     private String environment;
 
-    AbstractPayPalSupport(PayPalProperties payPalConstant) throws PackagerException {
+    AbstractPayPalSupport(PayPalProperties payPalConstant) {
         this.payPalConstant = payPalConstant;
         initPayPal();
     }
 
-    private void initPayPal() throws PackagerException {
+    private void initPayPal() {
 
         PayPalTO paypal = payPalConstant.getPaypal();
 
         if (paypal == null) {
-            throw new PackagerException("PayPal is empty");
+            throw new PayPalException("PayPal is empty");
         }
         this.sandboxAccessToken = paypal.getSandbox_access_token();
         this.productAccessToken = paypal.getProduct_access_token();
         this.environment = paypal.getEnvironment();
     }
 
-    String obtainAccessTokenByEnvironment() throws PackagerException {
+    String obtainAccessTokenByEnvironment() {
         if (StringUtils.isBlank(environment)) {
-            throw new PackagerException("environment is blank");
+            throw new PayPalException("environment is blank");
         }
 
         if (environment.trim().compareToIgnoreCase(PayPalConstant.PAYPAL_ENVIRONMENT_PRODUCT.trim()) == 0) {
@@ -46,11 +46,11 @@ abstract class AbstractPayPalSupport {
             return sandboxAccessToken;
         }
 
-        throw new PackagerException("environment is error");
+        throw new PayPalException("environment is error");
 
     }
 
-    BraintreeGateway obtainBraintreeGateway() throws PackagerException {
+    BraintreeGateway obtainBraintreeGateway() {
         return new BraintreeGateway(obtainAccessTokenByEnvironment());
     }
 }

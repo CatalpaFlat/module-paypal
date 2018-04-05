@@ -1,12 +1,12 @@
 package com.github.catalpaflat.paypal.support;
 
 import com.braintreegateway.*;
-import com.github.catalpaflat.paypal.properties.PayPalProperties;
+import com.github.catalpaflat.paypal.exception.PayPalException;
 import com.github.catalpaflat.paypal.model.bo.OptionsBO;
 import com.github.catalpaflat.paypal.model.vo.PayPalVO;
 import com.github.catalpaflat.paypal.model.vo.ReturnVO;
 import com.github.catalpaflat.paypal.model.vo.ShippingAddressBO;
-import com.sun.javafx.tools.packager.PackagerException;
+import com.github.catalpaflat.paypal.properties.PayPalProperties;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -18,17 +18,17 @@ import java.util.List;
 public class PayPalSpecificSupport extends AbstractPayPalSupport {
     private String accessToken;
 
-    public PayPalSpecificSupport(PayPalProperties payPalConstant) throws PackagerException {
+    public PayPalSpecificSupport(PayPalProperties payPalConstant) {
         super(payPalConstant);
         accessToken = obtainAccessTokenByEnvironment();
     }
 
-    public String obtainPublicAccessToken() throws PackagerException {
+    public String obtainPublicAccessToken() {
         BraintreeGateway gateway = new BraintreeGateway(accessToken);
         return gateway.clientToken().generate();
     }
 
-    public Result<Transaction> placeOrder(PayPalVO payPalVO) throws PackagerException {
+    public Result<Transaction> placeOrder(PayPalVO payPalVO) {
         TransactionRequest request = new TransactionRequest()
                 //付款金额
                 .amount(payPalVO.getAmount())
@@ -47,7 +47,7 @@ public class PayPalSpecificSupport extends AbstractPayPalSupport {
         if (isShippingAddress) {
             ShippingAddressBO shippingAddressVO = payPalVO.getShippingAddressVO();
             if (shippingAddressVO == null) {
-                throw new PackagerException("shippingAddress is empty");
+                throw new PayPalException("shippingAddress is empty");
             }
             request.shippingAddress()
                     .firstName(shippingAddressVO.getFirstName())
@@ -73,7 +73,7 @@ public class PayPalSpecificSupport extends AbstractPayPalSupport {
         if (isOptions) {
             OptionsBO optionsVO = payPalVO.getOptionsVO();
             if (optionsVO == null) {
-                throw new PackagerException("options is empty");
+                throw new PayPalException("options is empty");
             }
             //附加信息
             request.options().
@@ -105,7 +105,7 @@ public class PayPalSpecificSupport extends AbstractPayPalSupport {
         return errorResult;
     }
 
-    public Result<Transaction> refund(ReturnVO returnVO) throws PackagerException {
+    public Result<Transaction> refund(ReturnVO returnVO) {
         BigDecimal amount = returnVO.getAmount();
         String orderId = returnVO.getOrderId();
         String transactionId = returnVO.getTransactionId();
@@ -129,6 +129,6 @@ public class PayPalSpecificSupport extends AbstractPayPalSupport {
             return obtainBraintreeGateway().transaction().refund(transactionId, transactionRefundRequest);
         }
 
-        throw new PackagerException("refund error");
+        throw new PayPalException("refund error");
     }
 }
