@@ -6,7 +6,7 @@
 
     <groupId>com.github.catalpaflat</groupId>
     <artifactId>module-paypal</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>module-paypal</name>
     <packaging>jar</packaging>
 

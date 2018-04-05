@@ -6,7 +6,7 @@
 <dependency>
   <groupId>com.github.catalpaflat</groupId>
   <artifactId>module-paypal</artifactId>
-  <version>1.0.0</version>
+  <version>0.0.1</version>
 </dependency>
 ```
 ## 2. yml配置
